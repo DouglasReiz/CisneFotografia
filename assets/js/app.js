@@ -51,3 +51,47 @@
 
     dots[0].classList.add('active');
 })();
+
+// ===== Menu hambúrguer =====
+(() => {
+    const toggle = document.querySelector('.menu-toggle');
+    const menu = document.getElementById('menu');
+    if (!toggle || !menu) return;
+
+    const mobile = window.matchMedia('(max-width: 768px)');
+
+    const setOpen = (open) => {
+        menu.classList.toggle('open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+    };
+
+    // abre/fecha ao clicar no botão
+    toggle.addEventListener('click', () => {
+        setOpen(!menu.classList.contains('open'));
+    });
+
+    // fecha ao clicar em um link (útil com âncoras #)
+    menu.addEventListener('click', (e) => {
+        if (e.target.closest('a')) setOpen(false);
+    });
+
+    // fecha ao clicar fora do menu
+    document.addEventListener('click', (e) => {
+        if (!menu.classList.contains('open')) return;
+        if (!e.target.closest('header nav')) setOpen(false);
+    });
+
+    // fecha com a tecla Esc e devolve o foco ao botão
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu.classList.contains('open')) {
+            setOpen(false);
+            toggle.focus();
+        }
+    });
+
+    // se a tela voltar a ser grande, garante o menu resetado
+    mobile.addEventListener('change', (e) => {
+        if (!e.matches) setOpen(false);
+    });
+})();
